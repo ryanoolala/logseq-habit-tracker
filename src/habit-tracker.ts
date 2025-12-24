@@ -99,14 +99,14 @@ export class HabitTracker {
   ): void {
     for (const block of blocks) {
       if (block.content) {
-        // Match #habit tag pattern
-        const habitMatch = block.content.match(/#habit\s+([^\n#]+)/i)
+        // Match #habit tag pattern - capture until timestamp or end of line
+        const habitMatch = block.content.match(/#habit\s+([^#\n\r]*?)(?=\s+\d{1,2}:\d{2}|$)/i)
         if (habitMatch) {
           const habitName = habitMatch[1].trim()
           
-          // Try to extract time from the block
+          // Try to extract time from the habit entry with proper validation
           let time: string | undefined
-          const timeMatch = block.content.match(/(\d{1,2}:\d{2}\s*(?:AM|PM|am|pm)?)/i)
+          const timeMatch = block.content.match(/\b((?:1[0-2]|0?[1-9]):[0-5][0-9]\s*(?:[AaPp][Mm])|(?:2[0-3]|[01]?[0-9]):[0-5][0-9])\b/)
           if (timeMatch) {
             time = timeMatch[1]
           }
@@ -467,7 +467,7 @@ export class HabitTracker {
         const intensity = Math.min(count / 3, 1)
         const greenValue = Math.floor(186 + (16 - 186) * intensity)
         const blueValue = Math.floor(230 + (129 - 230) * intensity)
-        bgColor = `rgb(${greenValue}, ${blueValue}, ${16})`
+        bgColor = `rgb(${16}, ${greenValue}, ${blueValue})`
         title = `${count} habit${count > 1 ? 's' : ''} tracked`
       }
       
