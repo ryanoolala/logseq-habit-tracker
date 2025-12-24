@@ -1,6 +1,9 @@
 import '@logseq/libs'
 import { HabitTracker } from './habit-tracker'
 
+// Declare global logseq for TypeScript
+declare const logseq: any
+
 async function main() {
   console.log('Habit Tracker plugin loaded')
 
@@ -10,7 +13,7 @@ async function main() {
   await habitTracker.ensureHabitsPage()
 
   // Listen for page navigation to render the tracker
-  logseq.App.onRouteChanged(async ({ path }) => {
+  logseq.App.onRouteChanged(async ({ path }: any) => {
     if (path.includes('Habits')) {
       await habitTracker.renderOnHabitsPage()
     }

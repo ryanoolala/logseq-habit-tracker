@@ -1,5 +1,8 @@
 import '@logseq/libs'
 
+// Declare global logseq for TypeScript
+declare const logseq: any
+
 export interface HabitEntry {
   name: string
   date: string
@@ -162,18 +165,18 @@ export class HabitTracker {
 
     if (habits.length === 0) {
       return `
-        <div style="padding: 40px 20px; text-align: center; color: #666; max-width: 600px; margin: 0 auto;">
+        <div style="padding: 60px 20px; text-align: center; color: #787774; max-width: 600px; margin: 0 auto;">
           <div style="font-size: 48px; margin-bottom: 16px;">📊</div>
-          <h3 style="margin: 0 0 12px 0; font-size: 20px; color: #333;">No habits tracked yet!</h3>
-          <p style="margin: 0; font-size: 14px; line-height: 1.6;">
-            Start tracking habits in your daily journal by using the <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 4px;">#habit</code> tag:
+          <h3 style="margin: 0 0 12px 0; font-size: 18px; color: #37352F; font-weight: 600;">No habits tracked yet!</h3>
+          <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #787774;">
+            Start tracking habits in your daily journal by using the <code style="background: #f7f7f5; padding: 2px 6px; border-radius: 3px; font-size: 13px;">#habit</code> tag:
           </p>
-          <div style="background: #f9fafb; border-radius: 8px; padding: 16px; margin: 20px 0; text-align: left; font-family: monospace; font-size: 13px;">
-            <div style="color: #666; margin-bottom: 4px;">- #habit Exercise</div>
-            <div style="color: #666; margin-bottom: 4px;">- #habit Meditation 7:00 AM</div>
-            <div style="color: #666;">- #habit Reading</div>
+          <div style="background: #fafafa; border-radius: 6px; padding: 16px; margin: 20px 0; text-align: left; font-family: monospace; font-size: 13px; border: 1px solid #e3e3e1;">
+            <div style="color: #787774; margin-bottom: 4px;">- #habit Exercise</div>
+            <div style="color: #787774; margin-bottom: 4px;">- #habit Meditation 7:00 AM</div>
+            <div style="color: #787774;">- #habit Reading</div>
           </div>
-          <p style="margin: 16px 0 0 0; font-size: 13px; color: #888;">
+          <p style="margin: 16px 0 0 0; font-size: 13px; color: #9B9A97;">
             The timestamp is optional. If provided, it will be shown in the tracker.
           </p>
         </div>
@@ -187,24 +190,27 @@ export class HabitTracker {
     return `
       <div class="habit-tracker-container" style="
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
-        max-width: 1200px;
+        max-width: 1000px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 32px 24px;
+        background: #fafafa;
       ">
         <div class="habit-tracker-header" style="
-          margin-bottom: 24px;
-          padding-bottom: 20px;
-          border-bottom: 2px solid #e5e7eb;
+          margin-bottom: 32px;
+          padding-bottom: 0;
         ">
           <h1 style="
-            margin: 0 0 8px 0;
-            font-size: 28px;
+            margin: 0 0 4px 0;
+            font-size: 24px;
             font-weight: 600;
-            color: #111827;
+            color: #000000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
           ">📊 Habit Tracker</h1>
           <p style="
             margin: 0;
-            color: #6b7280;
+            color: #787774;
             font-size: 14px;
           ">Track your daily habits and build consistency</p>
         </div>
@@ -214,45 +220,42 @@ export class HabitTracker {
           justify-content: space-between;
           align-items: center;
           margin-bottom: 24px;
-          padding: 16px;
-          background: #f9fafb;
-          border-radius: 8px;
         ">
           <div class="habit-tracker-tabs" style="
             display: flex;
-            gap: 8px;
+            gap: 4px;
           ">
             <button class="tab-button active" data-tab="month" style="
-              padding: 8px 20px;
-              background: #4F46E5;
+              padding: 6px 12px;
+              background: #5B57EB;
               color: white;
               border: none;
-              border-radius: 6px;
-              font-size: 14px;
+              border-radius: 4px;
+              font-size: 13px;
               font-weight: 500;
               cursor: pointer;
-              transition: all 0.2s;
+              transition: all 0.15s;
             ">Month View</button>
             <button class="tab-button" data-tab="year" style="
-              padding: 8px 20px;
-              background: white;
-              color: #6b7280;
-              border: 1px solid #d1d5db;
-              border-radius: 6px;
-              font-size: 14px;
+              padding: 6px 12px;
+              background: transparent;
+              color: #787774;
+              border: none;
+              border-radius: 4px;
+              font-size: 13px;
               font-weight: 500;
               cursor: pointer;
-              transition: all 0.2s;
+              transition: all 0.15s;
             ">Year View</button>
           </div>
 
           <label style="
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             cursor: pointer;
-            font-size: 14px;
-            color: #6b7280;
+            font-size: 13px;
+            color: #787774;
           ">
             <input type="checkbox" id="toggle-timestamps" ${this.showTimestamps ? 'checked' : ''} style="
               cursor: pointer;
@@ -272,17 +275,18 @@ export class HabitTracker {
 
       <style>
         .habit-tracker-container .tab-button:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          background: #ededec;
         }
         .habit-tracker-container .tab-button.active {
-          background: #4F46E5 !important;
+          background: #5B57EB !important;
           color: white !important;
-          border-color: #4F46E5 !important;
+        }
+        .habit-tracker-container .tab-button.active:hover {
+          background: #4c48d9 !important;
         }
         .habit-tracker-container input[type="checkbox"] {
-          width: 16px;
-          height: 16px;
+          width: 14px;
+          height: 14px;
         }
       </style>
 
@@ -299,14 +303,14 @@ export class HabitTracker {
               // Update button states
               buttons.forEach(b => {
                 b.classList.remove('active');
-                b.style.background = 'white';
-                b.style.color = '#6b7280';
-                b.style.border = '1px solid #d1d5db';
+                b.style.background = 'transparent';
+                b.style.color = '#787774';
+                b.style.border = 'none';
               });
               this.classList.add('active');
-              this.style.background = '#4F46E5';
+              this.style.background = '#5B57EB';
               this.style.color = 'white';
-              this.style.border = '1px solid #4F46E5';
+              this.style.border = 'none';
 
               // Show/hide content
               const container = this.closest('.habit-tracker-container');
@@ -344,10 +348,10 @@ export class HabitTracker {
     let html = `
       <div class="month-view-container">
         <h2 style="
-          margin: 0 0 20px 0;
-          font-size: 20px;
+          margin: 0 0 16px 0;
+          font-size: 16px;
           font-weight: 600;
-          color: #111827;
+          color: #000000;
         ">${monthName}</h2>
     `
     
@@ -362,32 +366,31 @@ export class HabitTracker {
 
       html += `
         <div class="habit-card" style="
-          background: white;
-          border: 1px solid #e5e7eb;
-          border-radius: 12px;
-          padding: 20px;
-          margin-bottom: 20px;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+          background: #ffffff;
+          border: 1px solid #e3e3e1;
+          border-radius: 8px;
+          padding: 24px;
+          margin-bottom: 24px;
         ">
           <div class="habit-header" style="
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
           ">
             <h3 style="
               margin: 0;
-              font-size: 18px;
+              font-size: 16px;
               font-weight: 600;
-              color: #111827;
+              color: #000000;
             ">${this.escapeHtml(habit.name)}</h3>
             <div style="
-              background: #EEF2FF;
-              color: #4F46E5;
-              padding: 4px 12px;
-              border-radius: 12px;
-              font-size: 14px;
-              font-weight: 600;
+              background: #E8E7FF;
+              color: #5B57EB;
+              padding: 4px 10px;
+              border-radius: 4px;
+              font-size: 13px;
+              font-weight: 500;
             ">
               ${monthEntries.length} ${monthEntries.length === 1 ? 'time' : 'times'}
             </div>
@@ -396,18 +399,18 @@ export class HabitTracker {
           <div class="habit-calendar" style="
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
+            gap: 4px;
             margin-bottom: 16px;
           ">
             ${this.generateCalendarDays(monthEntries, firstDay, lastDay)}
           </div>
 
           <div class="habit-entries" style="
-            max-height: 150px;
+            max-height: 120px;
             overflow-y: auto;
             padding: 12px;
-            background: #f9fafb;
-            border-radius: 6px;
+            background: #fafafa;
+            border-radius: 4px;
           ">
             ${this.generateEntryList(monthEntries)}
           </div>
@@ -428,10 +431,10 @@ export class HabitTracker {
       html += `
         <div style="
           text-align: center;
-          font-size: 12px;
-          font-weight: 600;
-          color: #9ca3af;
-          padding: 4px;
+          font-size: 11px;
+          font-weight: 500;
+          color: #9B9A97;
+          padding: 8px 4px;
         ">${label}</div>
       `
     }
@@ -458,40 +461,42 @@ export class HabitTracker {
       const dateStr = currentDate.toISOString().split('T')[0]
       const count = dateCountMap.get(dateStr) || 0
       
-      let bgColor = '#f3f4f6' // No data
+      let bgColor = '#f7f7f5' // No data - very light gray
       let borderColor = 'transparent'
+      let borderWidth = '1px'
       let title = 'No habits tracked'
+      let textColor = '#9B9A97'
       
       if (count > 0) {
-        // Green intensity based on count
-        const intensity = Math.min(count / 3, 1)
-        const greenValue = Math.floor(186 + (16 - 186) * intensity)
-        const blueValue = Math.floor(230 + (129 - 230) * intensity)
-        bgColor = `rgb(${16}, ${greenValue}, ${blueValue})`
+        // Bright green color like in the reference
+        bgColor = '#B4EC51' // Bright lime green
         title = `${count} habit${count > 1 ? 's' : ''} tracked`
+        textColor = '#37352F'
       }
       
       // Highlight today
       const isToday = currentDate.getTime() === today.getTime()
       if (isToday) {
-        borderColor = '#4F46E5'
+        borderColor = '#5B57EB'
+        borderWidth = '2px'
       }
       
       html += `
         <div style="
           aspect-ratio: 1;
           background: ${bgColor};
-          border: 2px solid ${borderColor};
-          border-radius: 6px;
+          border: ${borderWidth} solid ${borderColor};
+          border-radius: 4px;
           cursor: pointer;
-          transition: all 0.2s;
+          transition: all 0.15s;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 11px;
-          font-weight: 600;
-          color: ${count > 0 ? 'white' : '#9ca3af'};
-        " title="${title} - ${dateStr}" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+          font-size: 12px;
+          font-weight: 400;
+          color: ${textColor};
+          min-height: 50px;
+        " title="${title} - ${dateStr}" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
           ${currentDate.getDate()}
         </div>
       `
@@ -504,10 +509,10 @@ export class HabitTracker {
 
   private generateEntryList(entries: HabitEntry[]): string {
     if (entries.length === 0) {
-      return '<p style="margin: 0; color: #9ca3af; font-size: 13px;">No entries this month</p>'
+      return '<p style="margin: 0; color: #9B9A97; font-size: 12px;">No entries this month</p>'
     }
 
-    let html = '<div style="display: flex; flex-direction: column; gap: 6px;">'
+    let html = '<div style="display: flex; flex-direction: column; gap: 4px;">'
     
     // Group by date
     const dateGroups = new Map<string, HabitEntry[]>()
@@ -534,9 +539,10 @@ export class HabitTracker {
           justify-content: space-between;
           align-items: center;
           font-size: 13px;
-          color: #374151;
+          color: #37352F;
+          padding: 4px 0;
         ">
-          <span style="font-weight: 500;">${formattedDate}</span>
+          <span style="font-weight: 400;">${formattedDate}</span>
           <div style="display: flex; gap: 8px; align-items: center;">
       `
 
@@ -544,7 +550,7 @@ export class HabitTracker {
         if (entry.time) {
           html += `
             <span class="habit-timestamp" style="
-              color: #6b7280;
+              color: #787774;
               font-size: 12px;
               display: ${this.showTimestamps ? 'inline' : 'none'};
             ">${entry.time}</span>
@@ -554,12 +560,12 @@ export class HabitTracker {
 
       html += `
             <span style="
-              background: #10B981;
+              background: #35D0BA;
               color: white;
               padding: 2px 8px;
               border-radius: 10px;
               font-size: 11px;
-              font-weight: 600;
+              font-weight: 500;
             ">${dateEntries.length}×</span>
           </div>
         </div>
@@ -576,40 +582,39 @@ export class HabitTracker {
     let html = `
       <div class="year-view-container">
         <h2 style="
-          margin: 0 0 20px 0;
-          font-size: 20px;
+          margin: 0 0 16px 0;
+          font-size: 16px;
           font-weight: 600;
-          color: #111827;
+          color: #000000;
         ">${year} Statistics</h2>
         
         <div style="
-          background: white;
-          border: 1px solid #e5e7eb;
-          border-radius: 12px;
+          background: #ffffff;
+          border: 1px solid #e3e3e1;
+          border-radius: 8px;
           overflow: hidden;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         ">
           <table style="
             width: 100%;
             border-collapse: collapse;
           ">
             <thead>
-              <tr style="background: #f9fafb;">
+              <tr style="background: #fafafa;">
                 <th style="
-                  padding: 16px 20px;
+                  padding: 12px 20px;
                   text-align: left;
                   font-weight: 600;
-                  color: #111827;
-                  font-size: 14px;
-                  border-bottom: 1px solid #e5e7eb;
+                  color: #000000;
+                  font-size: 13px;
+                  border-bottom: 1px solid #e3e3e1;
                 ">Habit</th>
                 <th style="
-                  padding: 16px 20px;
+                  padding: 12px 20px;
                   text-align: center;
                   font-weight: 600;
-                  color: #111827;
-                  font-size: 14px;
-                  border-bottom: 1px solid #e5e7eb;
+                  color: #000000;
+                  font-size: 13px;
+                  border-bottom: 1px solid #e3e3e1;
                 ">Total Count</th>
               </tr>
             </thead>
@@ -618,24 +623,24 @@ export class HabitTracker {
     
     for (const habit of habits) {
       html += `
-        <tr style="border-bottom: 1px solid #f3f4f6;">
+        <tr style="border-bottom: 1px solid #f7f7f5;">
           <td style="
-            padding: 16px 20px;
-            font-weight: 500;
-            color: #111827;
+            padding: 14px 20px;
+            font-weight: 400;
+            color: #37352F;
             font-size: 14px;
           ">${this.escapeHtml(habit.name)}</td>
           <td style="
-            padding: 16px 20px;
+            padding: 14px 20px;
             text-align: center;
           ">
             <span style="
-              background: #EEF2FF;
-              color: #4F46E5;
-              padding: 6px 16px;
-              border-radius: 12px;
-              font-size: 16px;
-              font-weight: 600;
+              background: #E8E7FF;
+              color: #5B57EB;
+              padding: 4px 12px;
+              border-radius: 4px;
+              font-size: 15px;
+              font-weight: 500;
               display: inline-block;
             ">${habit.totalCount}</span>
           </td>
