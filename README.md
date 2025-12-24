@@ -1,0 +1,111 @@
+# Logseq Habit Tracker Plugin 📊
+
+A beautiful and elegant habit tracking plugin for Logseq that helps you monitor your daily habits with modern month and year views.
+
+## Features
+
+✨ **Simple Habit Tracking** - Track habits using the `#habit` tag in your daily journal
+📅 **Month View** - Beautiful calendar heatmap showing daily habit completion
+📊 **Year View** - Simple statistics table with total counts
+⏰ **Optional Timestamps** - Add timestamps to your habits, toggleable in the view
+🎯 **Dedicated Page** - All your habits displayed on a clean "Habits" page
+🎨 **Modern UI** - Clean, elegant design that integrates seamlessly with Logseq
+
+## Usage
+
+### 1. Track Habits in Your Daily Journal
+
+Simply use the `#habit` tag followed by the habit name:
+
+```markdown
+- #habit Exercise
+- #habit Meditation 7:00 AM
+- #habit Reading
+- #habit Drink water 2:30 PM
+```
+
+Writing down the habit means you performed it. Timestamps are optional and can be added after the habit name.
+
+### 2. View Your Habits
+
+Navigate to the **Habits** page in Logseq to see your habit tracker dashboard. The plugin automatically creates this page on first load.
+
+## Views
+
+### Month View (Default)
+
+The month view displays a calendar heatmap for each habit:
+- **Darker green tiles** = More habits completed that day
+- **Light gray tiles** = No habits tracked that day
+- **Today** is highlighted with a blue border
+
+Each habit card shows:
+- Habit name
+- Total count for the month
+- Calendar grid with day numbers
+- List of entries with optional timestamps
+
+### Year View
+
+The year view provides a simple statistics table:
+- Habit name
+- Total count across all tracked days
+
+Toggle between views using the buttons at the top.
+
+### Timestamp Toggle
+
+Use the "Show timestamps" checkbox to show or hide timestamps in the entry lists. This keeps the view clean when you don't need time details.
+
+## Development
+
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+
+### Setup
+
+```bash
+npm install
+```
+
+### Build
+
+```bash
+npm run build
+```
+
+### Development Mode
+
+```bash
+npm run dev
+```
+
+This will watch for changes and rebuild automatically.
+
+### Installing in Logseq
+
+1. Build the plugin using `npm run build`
+2. Open Logseq
+3. Go to Settings → Plugins → Load unpacked plugin
+4. Select the plugin directory
+
+## Tips
+
+- **Keep habit names short**: Use concise names like "Exercise" or "Meditation"
+- **Daily tracking**: Add habits to each day's journal for accurate tracking
+- **Timestamps are optional**: Add them if you want to track when you completed habits
+- **Multiple entries**: You can log the same habit multiple times per day
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details
+
+## Author
+
+Ryan
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.

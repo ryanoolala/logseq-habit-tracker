@@ -1,0 +1,28 @@
+{
+  "name": "logseq-habit-tracker",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "logseq": {
+    "id": "logseq-habit-tracker",
+    "title": "Habit Tracker",
+    "icon": "📊",
+    "description": "Track your daily habits with beautiful month and year views"
+  },
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite build --watch"
+  },
+  "keywords": ["logseq", "plugin", "habit", "tracker", "productivity"],
+  "author": "Ryan",
+  "license": "MIT",
+  "description": "A Logseq plugin for tracking daily habits with elegant month and year views",
+  "dependencies": {
+    "@logseq/libs": "^0.0.15"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vite-plugin-logseq": "^1.1.2"
+  }
+}
