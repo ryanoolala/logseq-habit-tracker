@@ -217,7 +217,7 @@ export class HabitTracker {
 
         <div class="controls-bar" style="
           display: flex;
-          justify-content: space-between;
+          justify-content: flex-start;
           align-items: center;
           margin-bottom: 24px;
         ">
@@ -248,20 +248,6 @@ export class HabitTracker {
               transition: all 0.15s;
             ">Year View</button>
           </div>
-
-          <label style="
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            color: #787774;
-          ">
-            <input type="checkbox" id="toggle-timestamps" ${this.showTimestamps ? 'checked' : ''} style="
-              cursor: pointer;
-            "/>
-            <span>Show timestamps</span>
-          </label>
         </div>
 
         <div class="tab-content month-view">
@@ -293,7 +279,6 @@ export class HabitTracker {
       <script>
         (function() {
           const buttons = document.querySelectorAll('.habit-tracker-container .tab-button');
-          const timestampToggle = document.getElementById('toggle-timestamps');
           
           // Tab switching
           buttons.forEach(button => {
@@ -320,16 +305,6 @@ export class HabitTracker {
               container.querySelector('.' + tab + '-view').style.display = 'block';
             });
           });
-
-          // Timestamp toggle
-          if (timestampToggle) {
-            timestampToggle.addEventListener('change', function() {
-              const timestamps = document.querySelectorAll('.habit-timestamp');
-              timestamps.forEach(ts => {
-                ts.style.display = this.checked ? 'inline' : 'none';
-              });
-            });
-          }
         })();
       </script>
     `
@@ -342,8 +317,23 @@ export class HabitTracker {
     // Get first and last day of month
     const firstDay = new Date(year, month, 1)
     const lastDay = new Date(year, month + 1, 0)
+    const daysInMonth = lastDay.getDate()
     
     const monthName = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+    
+    // Create a map of date strings to habit completion
+    const habitCompletionMap = new Map<string, Map<string, boolean>>()
+    
+    for (const habit of habits) {
+      const dateMap = new Map<string, boolean>()
+      for (const entry of habit.entries) {
+        const entryDate = new Date(entry.date)
+        if (entryDate.getMonth() === month && entryDate.getFullYear() === year) {
+          dateMap.set(entry.date, true)
+        }
+      }
+      habitCompletionMap.set(habit.name, dateMap)
+    }
     
     let html = `
       <div class="month-view-container">
@@ -353,226 +343,118 @@ export class HabitTracker {
           font-weight: 600;
           color: #000000;
         ">${monthName}</h2>
-    `
-    
-    for (const habit of habits) {
-      // Filter entries for this month
-      const monthEntries = habit.entries.filter(entry => {
-        const entryDate = new Date(entry.date)
-        return entryDate.getMonth() === month && entryDate.getFullYear() === year
-      })
-
-      if (monthEntries.length === 0) continue
-
-      html += `
-        <div class="habit-card" style="
+        
+        <div style="
           background: #ffffff;
           border: 1px solid #e3e3e1;
           border-radius: 8px;
-          padding: 24px;
-          margin-bottom: 24px;
+          overflow-x: auto;
+          padding: 16px;
         ">
-          <div class="habit-header" style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+          <table style="
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
           ">
-            <h3 style="
-              margin: 0;
-              font-size: 16px;
-              font-weight: 600;
-              color: #000000;
-            ">${this.escapeHtml(habit.name)}</h3>
-            <div style="
-              background: #E8E7FF;
-              color: #5B57EB;
-              padding: 4px 10px;
-              border-radius: 4px;
-              font-size: 13px;
-              font-weight: 500;
-            ">
-              ${monthEntries.length} ${monthEntries.length === 1 ? 'time' : 'times'}
-            </div>
-          </div>
-          
-          <div class="habit-calendar" style="
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            margin-bottom: 16px;
-          ">
-            ${this.generateCalendarDays(monthEntries, firstDay, lastDay)}
-          </div>
-
-          <div class="habit-entries" style="
-            max-height: 120px;
-            overflow-y: auto;
-            padding: 12px;
-            background: #fafafa;
-            border-radius: 4px;
-          ">
-            ${this.generateEntryList(monthEntries)}
-          </div>
+            <thead>
+              <tr style="border-bottom: 2px solid #e3e3e1;">
+                <th style="
+                  padding: 12px 16px;
+                  text-align: left;
+                  font-weight: 600;
+                  color: #000000;
+                  position: sticky;
+                  left: 0;
+                  background: #ffffff;
+                  min-width: 120px;
+                ">Habit</th>
+    `
+    
+    // Add date headers
+    for (let day = 1; day <= daysInMonth; day++) {
+      html += `
+                <th style="
+                  padding: 8px 4px;
+                  text-align: center;
+                  font-weight: 500;
+                  color: #787774;
+                  font-size: 12px;
+                  min-width: 32px;
+                ">${day}</th>
+      `
+    }
+    
+    html += `
+                <th style="
+                  padding: 12px 16px;
+                  text-align: center;
+                  font-weight: 600;
+                  color: #000000;
+                  min-width: 60px;
+                ">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+    `
+    
+    // Add habit rows
+    for (const habit of habits) {
+      const dateMap = habitCompletionMap.get(habit.name) || new Map()
+      let totalCount = 0
+      
+      html += `
+              <tr style="border-bottom: 1px solid #f7f7f5;">
+                <td style="
+                  padding: 12px 16px;
+                  font-weight: 500;
+                  color: #37352F;
+                  position: sticky;
+                  left: 0;
+                  background: #ffffff;
+                ">${this.escapeHtml(habit.name)}</td>
+      `
+      
+      // Add cells for each day
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+        const hasHabit = dateMap.has(dateStr)
+        
+        if (hasHabit) totalCount++
+        
+        // Check if this is today
+        const today = new Date()
+        const isToday = today.getDate() === day && 
+                       today.getMonth() === month && 
+                       today.getFullYear() === year
+        
+        html += `
+                <td style="
+                  padding: 8px 4px;
+                  text-align: center;
+                  background: ${isToday ? '#EEF2FF' : 'transparent'};
+                  font-size: 16px;
+                ">${hasHabit ? '✓' : ''}</td>
+        `
+      }
+      
+      html += `
+                <td style="
+                  padding: 12px 16px;
+                  text-align: center;
+                  font-weight: 600;
+                  color: #5B57EB;
+                ">${totalCount}</td>
+              </tr>
+      `
+    }
+    
+    html += `
+            </tbody>
+          </table>
         </div>
-      `
-    }
+      </div>
+    `
     
-    html += '</div>'
-    return html
-  }
-
-  private generateCalendarDays(entries: HabitEntry[], firstDay: Date, lastDay: Date): string {
-    let html = ''
-    
-    // Add day labels
-    const dayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
-    for (const label of dayLabels) {
-      html += `
-        <div style="
-          text-align: center;
-          font-size: 11px;
-          font-weight: 500;
-          color: #9B9A97;
-          padding: 8px 4px;
-        ">${label}</div>
-      `
-    }
-    
-    // Add empty cells for days before month starts
-    const startDay = firstDay.getDay()
-    for (let i = 0; i < startDay; i++) {
-      html += '<div></div>'
-    }
-    
-    // Create a map of dates to entry counts
-    const dateCountMap = new Map<string, number>()
-    for (const entry of entries) {
-      const count = dateCountMap.get(entry.date) || 0
-      dateCountMap.set(entry.date, count + 1)
-    }
-    
-    // Add calendar days
-    const currentDate = new Date(firstDay)
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    
-    while (currentDate <= lastDay) {
-      const dateStr = currentDate.toISOString().split('T')[0]
-      const count = dateCountMap.get(dateStr) || 0
-      
-      let bgColor = '#f7f7f5' // No data - very light gray
-      let borderColor = 'transparent'
-      let borderWidth = '1px'
-      let title = 'No habits tracked'
-      let textColor = '#9B9A97'
-      
-      if (count > 0) {
-        // Bright green color like in the reference
-        bgColor = '#B4EC51' // Bright lime green
-        title = `${count} habit${count > 1 ? 's' : ''} tracked`
-        textColor = '#37352F'
-      }
-      
-      // Highlight today
-      const isToday = currentDate.getTime() === today.getTime()
-      if (isToday) {
-        borderColor = '#5B57EB'
-        borderWidth = '2px'
-      }
-      
-      html += `
-        <div style="
-          aspect-ratio: 1;
-          background: ${bgColor};
-          border: ${borderWidth} solid ${borderColor};
-          border-radius: 4px;
-          cursor: pointer;
-          transition: all 0.15s;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 12px;
-          font-weight: 400;
-          color: ${textColor};
-          min-height: 50px;
-        " title="${title} - ${dateStr}" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-          ${currentDate.getDate()}
-        </div>
-      `
-      
-      currentDate.setDate(currentDate.getDate() + 1)
-    }
-    
-    return html
-  }
-
-  private generateEntryList(entries: HabitEntry[]): string {
-    if (entries.length === 0) {
-      return '<p style="margin: 0; color: #9B9A97; font-size: 12px;">No entries this month</p>'
-    }
-
-    let html = '<div style="display: flex; flex-direction: column; gap: 4px;">'
-    
-    // Group by date
-    const dateGroups = new Map<string, HabitEntry[]>()
-    for (const entry of entries) {
-      if (!dateGroups.has(entry.date)) {
-        dateGroups.set(entry.date, [])
-      }
-      dateGroups.get(entry.date)!.push(entry)
-    }
-
-    // Sort dates in descending order
-    const sortedDates = Array.from(dateGroups.keys()).sort((a, b) => b.localeCompare(a))
-
-    for (const date of sortedDates) {
-      const dateEntries = dateGroups.get(date)!
-      const formattedDate = new Date(date).toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric' 
-      })
-
-      html += `
-        <div style="
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          font-size: 13px;
-          color: #37352F;
-          padding: 4px 0;
-        ">
-          <span style="font-weight: 400;">${formattedDate}</span>
-          <div style="display: flex; gap: 8px; align-items: center;">
-      `
-
-      for (const entry of dateEntries) {
-        if (entry.time) {
-          html += `
-            <span class="habit-timestamp" style="
-              color: #787774;
-              font-size: 12px;
-              display: ${this.showTimestamps ? 'inline' : 'none'};
-            ">${entry.time}</span>
-          `
-        }
-      }
-
-      html += `
-            <span style="
-              background: #35D0BA;
-              color: white;
-              padding: 2px 8px;
-              border-radius: 10px;
-              font-size: 11px;
-              font-weight: 500;
-            ">${dateEntries.length}×</span>
-          </div>
-        </div>
-      `
-    }
-
-    html += '</div>'
     return html
   }
 
