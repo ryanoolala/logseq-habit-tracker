@@ -3,6 +3,13 @@ import '@logseq/libs'
 // Declare global logseq for TypeScript
 declare const logseq: any
 
+// Constants
+const HABITS_PAGE_NAME = 'Habits' as const
+const UI_KEY = 'habit-tracker-main' as const
+
+// Regex patterns
+const TIMESTAMP_PATTERN = /((?:1[0-2]|0?[1-9]):[0-5][0-9]\s*(?:[AaPp][Mm])|(?:2[0-3]|[01]?[0-9]):[0-5][0-9])/
+
 export interface HabitEntry {
   name: string
   date: string
@@ -19,36 +26,44 @@ export interface HabitStats {
 
 export class HabitTracker {
   async ensureHabitsPage(): Promise<void> {
-    // Check if Habits page exists
-    const page = await logseq.Editor.getPage('Habits')
-    if (!page) {
-      // Create the Habits page
-      await logseq.Editor.createPage('Habits', {}, { redirect: false })
-      console.log('Created Habits page')
+    try {
+      // Check if Habits page exists
+      const page = await logseq.Editor.getPage(HABITS_PAGE_NAME)
+      if (!page) {
+        // Create the Habits page
+        await logseq.Editor.createPage(HABITS_PAGE_NAME, {}, { redirect: false })
+        console.log(`Created ${HABITS_PAGE_NAME} page`)
+      }
+    } catch (error) {
+      console.error('Error ensuring Habits page:', error)
     }
   }
 
   async renderOnHabitsPage(): Promise<void> {
-    const page = await logseq.Editor.getPage('Habits')
-    if (!page) return
+    try {
+      const page = await logseq.Editor.getPage(HABITS_PAGE_NAME)
+      if (!page) return
 
-    const pageBlocks = await logseq.Editor.getPageBlocksTree('Habits')
-    
-    // Clear existing content and add the tracker
-    if (!pageBlocks || pageBlocks.length === 0) {
-      await logseq.Editor.appendBlockInPage('Habits', '')
+      const pageBlocks = await logseq.Editor.getPageBlocksTree(HABITS_PAGE_NAME)
+      
+      // Clear existing content and add the tracker
+      if (!pageBlocks || pageBlocks.length === 0) {
+        await logseq.Editor.appendBlockInPage(HABITS_PAGE_NAME, '')
+      }
+
+      // Render the habit tracker UI
+      const habitData = await this.getHabitData()
+      const html = this.generateHabitTrackerHTML(habitData)
+
+      logseq.provideUI({
+        key: UI_KEY,
+        slot: HABITS_PAGE_NAME,
+        reset: true,
+        template: html,
+      })
+    } catch (error) {
+      console.error('Error rendering on Habits page:', error)
     }
-
-    // Render the habit tracker UI
-    const habitData = await this.getHabitData()
-    const html = this.generateHabitTrackerHTML(habitData)
-
-    logseq.provideUI({
-      key: 'habit-tracker-main',
-      slot: 'Habits',
-      reset: true,
-      template: html,
-    })
   }
 
   async getHabitData(startDate?: Date, endDate?: Date): Promise<Map<string, HabitStats>> {
@@ -105,9 +120,12 @@ export class HabitTracker {
         if (habitMatch) {
           const habitName = habitMatch[1].trim()
           
+          // Skip empty habit names
+          if (!habitName) continue
+          
           // Try to extract time from the habit entry with proper validation
           let time: string | undefined
-          const timeMatch = block.content.match(/\b((?:1[0-2]|0?[1-9]):[0-5][0-9]\s*(?:[AaPp][Mm])|(?:2[0-3]|[01]?[0-9]):[0-5][0-9])\b/)
+          const timeMatch = block.content.match(TIMESTAMP_PATTERN)
           if (timeMatch) {
             time = timeMatch[1]
           }
@@ -312,8 +330,7 @@ export class HabitTracker {
     const year = date.getFullYear()
     const month = date.getMonth()
     
-    // Get first and last day of month
-    const firstDay = new Date(year, month, 1)
+    // Get last day of month to determine number of days
     const lastDay = new Date(year, month + 1, 0)
     const daysInMonth = lastDay.getDate()
     

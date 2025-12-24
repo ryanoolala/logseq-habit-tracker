@@ -10,19 +10,30 @@
   },
   "scripts": {
     "build": "tsc && vite build",
-    "dev": "vite build --watch"
+    "dev": "vite build --watch",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix"
   },
-  "keywords": ["logseq", "plugin", "habit", "tracker", "productivity"],
+  "keywords": [
+    "logseq",
+    "plugin",
+    "habit",
+    "tracker",
+    "productivity"
+  ],
   "author": "Ryan",
   "license": "MIT",
   "description": "A Logseq plugin for tracking daily habits with elegant month and year views",
   "dependencies": {
-    "@logseq/libs": "^0.0.15"
+    "@logseq/libs": "^0.2.9"
   },
   "devDependencies": {
     "@types/node": "^20.10.6",
+    "@typescript-eslint/eslint-plugin": "^8.50.1",
+    "@typescript-eslint/parser": "^8.50.1",
+    "eslint": "^9.39.2",
     "typescript": "^5.3.3",
-    "vite": "^5.0.10",
+    "vite": "^7.3.0",
     "vite-plugin-logseq": "^1.1.2"
   }
 }
