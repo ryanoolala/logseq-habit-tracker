@@ -18,8 +18,6 @@ export interface HabitStats {
 }
 
 export class HabitTracker {
-  private showTimestamps: boolean = false
-
   async ensureHabitsPage(): Promise<void> {
     // Check if Habits page exists
     const page = await logseq.Editor.getPage('Habits')
