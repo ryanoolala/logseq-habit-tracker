@@ -2,6 +2,24 @@
 
 A beautiful and elegant habit tracking plugin for Logseq that helps you monitor your daily habits with modern month and year views.
 
+## Installation
+
+### Loading the Plugin into Logseq
+
+This plugin can be loaded directly into Logseq without building:
+
+1. **Download or clone this repository** to your local machine
+2. **Open Logseq Desktop**
+3. Click on the **three dots menu (⋯)** in the top right corner
+4. Go to **Settings** → **Advanced** → Enable **Developer mode**
+5. Go to **Settings** → **Plugins** 
+6. Click **Load unpacked plugin**
+7. Navigate to and select the plugin's root directory (the folder containing `package.json`)
+8. The plugin will load automatically!
+9. Navigate to the **Habits** page to start tracking your habits
+
+**Note:** The plugin is ready to use - all necessary files (including the built `dist/` directory) are included in the repository.
+
 ## Features
 
 ✨ **Simple Habit Tracking** - Track habits using the `#habit` tag in your daily journal
@@ -86,10 +104,26 @@ This will watch for changes and rebuild automatically.
 
 ### Installing in Logseq
 
-1. Build the plugin using `npm run build`
-2. Open Logseq
-3. Go to Settings → Plugins → Load unpacked plugin
-4. Select the plugin directory
+#### Option 1: Load from Repository (Recommended)
+
+If you've cloned or downloaded this repository:
+
+1. Open Logseq Desktop
+2. Click on the three dots menu (⋯) in the top right
+3. Go to **Settings** → **Advanced** → Enable **Developer mode**
+4. Go to **Settings** → **Plugins** 
+5. Click **Load unpacked plugin**
+6. Navigate to and select this plugin's root directory (containing `package.json`)
+7. The plugin will load and you can navigate to the **Habits** page to start tracking!
+
+#### Option 2: Build from Source
+
+If you want to build the plugin yourself:
+
+1. Clone the repository
+2. Run `npm install` to install dependencies
+3. Run `npm run build` to build the plugin
+4. Follow the steps in Option 1 to load the plugin
 
 ## Tips
 
