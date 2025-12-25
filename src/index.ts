@@ -1,11 +1,8 @@
 import '@logseq/libs'
-import { HabitTracker } from './habit-tracker'
+import { HabitTracker, HABITS_PAGE_NAME, RENDERER_NAME } from './habit-tracker'
 
 // Declare global logseq for TypeScript
 declare const logseq: any
-
-const HABITS_PAGE_NAME = 'Habits' as const
-const RENDERER_NAME = 'habit-tracker' as const
 
 async function main(): Promise<void> {
   console.log('Habit Tracker plugin loaded')
@@ -18,6 +15,9 @@ async function main(): Promise<void> {
 
     // Register the macro renderer for the habit tracker
     logseq.App.onMacroRendererSlotted(({ slot, payload }: { slot: string, payload: any }) => {
+      // Safety check for payload.arguments
+      if (!payload || !payload.arguments || !payload.arguments.length) return
+
       const [type] = payload.arguments
       if (type !== `:${RENDERER_NAME}`) return
 

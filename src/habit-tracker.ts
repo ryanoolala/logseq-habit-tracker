@@ -4,8 +4,8 @@ import '@logseq/libs'
 declare const logseq: any
 
 // Constants
-const HABITS_PAGE_NAME = 'Habits' as const
-const RENDERER_NAME = 'habit-tracker' as const
+export const HABITS_PAGE_NAME = 'Habits' as const
+export const RENDERER_NAME = 'habit-tracker' as const
 
 // Regex patterns
 const TIMESTAMP_PATTERN = /((?:1[0-2]|0?[1-9]):[0-5][0-9]\s*(?:[AaPp][Mm])|(?:2[0-3]|[01]?[0-9]):[0-5][0-9])/
@@ -40,7 +40,7 @@ export class HabitTracker {
       const pageBlocks = await logseq.Editor.getPageBlocksTree(HABITS_PAGE_NAME)
       const rendererContent = `{{renderer :${RENDERER_NAME}}}`
       const hasRenderer = pageBlocks && pageBlocks.some((block: any) => 
-        block.content && block.content.trim() === rendererContent
+        block.content && typeof block.content === 'string' && block.content.trim() === rendererContent
       )
 
       if (!hasRenderer) {
