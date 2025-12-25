@@ -11,8 +11,8 @@ function copyFilesPlugin(): Plugin {
       // Copy icon.svg
       try {
         copyFileSync(
-          resolve(__dirname, 'icon.svg'),
-          resolve(__dirname, 'dist', 'icon.svg')
+          resolve(process.cwd(), 'icon.svg'),
+          resolve(process.cwd(), 'dist', 'icon.svg')
         )
         console.log('✓ Copied icon.svg to dist/')
       } catch (err) {
@@ -22,12 +22,12 @@ function copyFilesPlugin(): Plugin {
       // Copy and modify package.json
       try {
         const packageJson = JSON.parse(
-          readFileSync(resolve(__dirname, 'package.json'), 'utf-8')
+          readFileSync(resolve(process.cwd(), 'package.json'), 'utf-8')
         )
         // Update the main field to point to index.js in the same directory
         packageJson.main = 'index.js'
         writeFileSync(
-          resolve(__dirname, 'dist', 'package.json'),
+          resolve(process.cwd(), 'dist', 'package.json'),
           JSON.stringify(packageJson, null, 2)
         )
         console.log('✓ Copied package.json to dist/ (with updated main field)')
