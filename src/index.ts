@@ -1,10 +1,8 @@
 import '@logseq/libs'
-import { HabitTracker } from './habit-tracker'
+import { HabitTracker, HABITS_PAGE_NAME, RENDERER_NAME } from './habit-tracker'
 
 // Declare global logseq for TypeScript
 declare const logseq: any
-
-const HABITS_PAGE_NAME = 'Habits' as const
 
 async function main(): Promise<void> {
   console.log('Habit Tracker plugin loaded')
@@ -12,21 +10,20 @@ async function main(): Promise<void> {
   const habitTracker = new HabitTracker()
 
   try {
-    // Create or get the Habits page
+    // Create or get the Habits page with renderer block
     await habitTracker.ensureHabitsPage()
 
-    // Listen for page navigation to render the tracker
-    logseq.App.onRouteChanged(async ({ path }: { path: string }) => {
-      if (path.includes(HABITS_PAGE_NAME)) {
-        await habitTracker.renderOnHabitsPage()
-      }
-    })
+    // Register the macro renderer for the habit tracker
+    logseq.App.onMacroRendererSlotted(({ slot, payload }: { slot: string, payload: any }) => {
+      // Safety check for payload.arguments
+      if (!payload || !payload.arguments || !payload.arguments.length) return
 
-    // Initial render if we're already on the Habits page
-    const currentPage = await logseq.Editor.getCurrentPage()
-    if (currentPage && currentPage.name === HABITS_PAGE_NAME) {
-      await habitTracker.renderOnHabitsPage()
-    }
+      const [type] = payload.arguments
+      if (type !== `:${RENDERER_NAME}`) return
+
+      // Render the habit tracker in the slot
+      habitTracker.renderHabitTracker(slot)
+    })
 
     console.log(`Habit Tracker plugin ready! Navigate to the "${HABITS_PAGE_NAME}" page to view your tracker.`)
   } catch (error) {

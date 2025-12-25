@@ -98,6 +98,31 @@ This will watch for changes and rebuild automatically.
 - **Timestamps are optional**: Add them if you want to track when you completed habits
 - **Multiple entries**: You can log the same habit multiple times per day
 
+## Troubleshooting
+
+### How do I know if the plugin is working?
+
+When the plugin loads successfully:
+
+1. A **Habits** page is automatically created in your graph (if it doesn't exist)
+2. On the Habits page, you'll see a block with `{{renderer :habit-tracker}}`
+3. Below that, you'll see either:
+   - The habit tracker dashboard (if you have tracked habits)
+   - A welcome message with instructions (if you haven't tracked any habits yet)
+
+If you see an empty page or only the renderer block without the dashboard:
+- Try refreshing the page (Cmd/Ctrl + R)
+- Check the browser console for errors (Cmd/Ctrl + Shift + I)
+- Make sure you've added some habits to your daily journal using `#habit HabitName`
+
+### The Habits page shows "No habits tracked yet"
+
+This is normal if you haven't added any habits to your daily journal yet! The plugin is working correctly. To start tracking:
+
+1. Go to today's journal page
+2. Add a habit like: `- #habit Exercise`
+3. Return to the Habits page to see it appear in the tracker
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) file for details

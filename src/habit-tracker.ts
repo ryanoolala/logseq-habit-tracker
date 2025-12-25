@@ -4,8 +4,9 @@ import '@logseq/libs'
 declare const logseq: any
 
 // Constants
-const HABITS_PAGE_NAME = 'Habits' as const
-const UI_KEY = 'habit-tracker-main' as const
+export const HABITS_PAGE_NAME = 'Habits' as const
+export const RENDERER_NAME = 'habit-tracker' as const
+export const RENDERER_CONTENT = `{{renderer :${RENDERER_NAME}}}` as const
 
 // Regex patterns
 const TIMESTAMP_PATTERN = /((?:1[0-2]|0?[1-9]):[0-5][0-9]\s*(?:[AaPp][Mm])|(?:2[0-3]|[01]?[0-9]):[0-5][0-9])/
@@ -28,41 +29,48 @@ export class HabitTracker {
   async ensureHabitsPage(): Promise<void> {
     try {
       // Check if Habits page exists
-      const page = await logseq.Editor.getPage(HABITS_PAGE_NAME)
+      let page = await logseq.Editor.getPage(HABITS_PAGE_NAME)
       if (!page) {
         // Create the Habits page
         await logseq.Editor.createPage(HABITS_PAGE_NAME, {}, { redirect: false })
         console.log(`Created ${HABITS_PAGE_NAME} page`)
+        page = await logseq.Editor.getPage(HABITS_PAGE_NAME)
+      }
+
+      // Check if the page has the renderer block
+      const pageBlocks = await logseq.Editor.getPageBlocksTree(HABITS_PAGE_NAME)
+      const hasRenderer = pageBlocks?.some((block: any) => 
+        block.content && typeof block.content === 'string' && block.content.trim() === RENDERER_CONTENT
+      )
+
+      if (!hasRenderer) {
+        // Add the renderer block to the page
+        await logseq.Editor.appendBlockInPage(
+          HABITS_PAGE_NAME, 
+          RENDERER_CONTENT
+        )
+        console.log(`Added habit tracker renderer to ${HABITS_PAGE_NAME} page`)
       }
     } catch (error) {
       console.error('Error ensuring Habits page:', error)
     }
   }
 
-  async renderOnHabitsPage(): Promise<void> {
+  async renderHabitTracker(slotId: string): Promise<void> {
     try {
-      const page = await logseq.Editor.getPage(HABITS_PAGE_NAME)
-      if (!page) return
-
-      const pageBlocks = await logseq.Editor.getPageBlocksTree(HABITS_PAGE_NAME)
-      
-      // Clear existing content and add the tracker
-      if (!pageBlocks || pageBlocks.length === 0) {
-        await logseq.Editor.appendBlockInPage(HABITS_PAGE_NAME, '')
-      }
-
-      // Render the habit tracker UI
+      // Get habit data and generate HTML
       const habitData = await this.getHabitData()
       const html = this.generateHabitTrackerHTML(habitData)
 
+      // Render the UI in the slot
       logseq.provideUI({
-        key: UI_KEY,
-        slot: HABITS_PAGE_NAME,
+        key: `${RENDERER_NAME}-${slotId}`,
+        slot: slotId,
         reset: true,
         template: html,
       })
     } catch (error) {
-      console.error('Error rendering on Habits page:', error)
+      console.error('Error rendering habit tracker:', error)
     }
   }
 
