@@ -5,6 +5,7 @@ import { HabitTracker } from './habit-tracker'
 declare const logseq: any
 
 const HABITS_PAGE_NAME = 'Habits' as const
+const RENDERER_NAME = 'habit-tracker' as const
 
 async function main(): Promise<void> {
   console.log('Habit Tracker plugin loaded')
@@ -12,21 +13,17 @@ async function main(): Promise<void> {
   const habitTracker = new HabitTracker()
 
   try {
-    // Create or get the Habits page
+    // Create or get the Habits page with renderer block
     await habitTracker.ensureHabitsPage()
 
-    // Listen for page navigation to render the tracker
-    logseq.App.onRouteChanged(async ({ path }: { path: string }) => {
-      if (path.includes(HABITS_PAGE_NAME)) {
-        await habitTracker.renderOnHabitsPage()
-      }
-    })
+    // Register the macro renderer for the habit tracker
+    logseq.App.onMacroRendererSlotted(({ slot, payload }: { slot: string, payload: any }) => {
+      const [type] = payload.arguments
+      if (type !== `:${RENDERER_NAME}`) return
 
-    // Initial render if we're already on the Habits page
-    const currentPage = await logseq.Editor.getCurrentPage()
-    if (currentPage && currentPage.name === HABITS_PAGE_NAME) {
-      await habitTracker.renderOnHabitsPage()
-    }
+      // Render the habit tracker in the slot
+      habitTracker.renderHabitTracker(slot)
+    })
 
     console.log(`Habit Tracker plugin ready! Navigate to the "${HABITS_PAGE_NAME}" page to view your tracker.`)
   } catch (error) {
