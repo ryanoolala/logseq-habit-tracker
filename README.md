@@ -89,7 +89,7 @@ This will watch for changes and rebuild automatically.
 1. Build the plugin using `npm run build`
 2. Open Logseq
 3. Go to Settings → Plugins → Load unpacked plugin
-4. Select the plugin directory
+4. Select the `dist` directory (not the root project directory)
 
 ## Tips
 
@@ -122,6 +122,15 @@ This is normal if you haven't added any habits to your daily journal yet! The pl
 1. Go to today's journal page
 2. Add a habit like: `- #habit Exercise`
 3. Return to the Habits page to see it appear in the tracker
+
+### Error: "Parse package config error" or plugin won't load
+
+If you see an error like `IllegalPluginPackageError: Parse package config error` in the browser console:
+
+1. Make sure you've run `npm run build` to build the plugin
+2. When loading the plugin in Logseq, select the `dist` directory (not the root project directory)
+3. The `dist` directory should contain `package.json`, `icon.svg`, and `index.js` files
+4. If the problem persists, try deleting the `dist` directory and running `npm run build` again
 
 ## License
 
