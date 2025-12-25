@@ -104,10 +104,23 @@ The year view shows:
 
 ## Troubleshooting
 
+**Q: The Habits page is empty or I only see a renderer block**
+- This is expected! The plugin creates a block with `{{renderer :habit-tracker}}` that displays the tracker
+- If you see the renderer block but no tracker dashboard below it, try refreshing the page
+- The plugin needs at least one habit tracked in your journal to display the tracker
+- Make sure the plugin is loaded and enabled in Settings → Plugins
+
 **Q: My habits aren't showing up**
 - Make sure you're using the exact format: `#habit HabitName`
 - Check that you're adding them to journal pages (daily notes)
 - Navigate to the "Habits" page to see the tracker
+- Try refreshing the Habits page after adding new habits
+
+**Q: How do I know if the plugin is working?**
+- Check if the "Habits" page exists in your graph
+- On the Habits page, you should see `{{renderer :habit-tracker}}` followed by the tracker UI
+- If you haven't tracked any habits yet, you'll see a welcome message with instructions
+- Check the browser console (Cmd/Ctrl + Shift + I) for any error messages
 
 **Q: Can I track habits on non-journal pages?**
 - Currently, the plugin only tracks habits from daily journal pages
