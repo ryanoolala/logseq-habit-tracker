@@ -38,8 +38,9 @@ export class HabitTracker {
 
       // Check if the page has the renderer block
       const pageBlocks = await logseq.Editor.getPageBlocksTree(HABITS_PAGE_NAME)
+      const rendererContent = `{{renderer :${RENDERER_NAME}}}`
       const hasRenderer = pageBlocks && pageBlocks.some((block: any) => 
-        block.content && block.content.includes(`{{renderer :${RENDERER_NAME}}}`)
+        block.content && block.content.trim() === rendererContent
       )
 
       if (!hasRenderer) {
