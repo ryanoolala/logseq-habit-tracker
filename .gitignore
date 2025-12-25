@@ -80,7 +80,8 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+# dist - Commented out because Logseq plugins need the dist folder to be committed
+# dist
 
 # Gatsby files
 .cache/
