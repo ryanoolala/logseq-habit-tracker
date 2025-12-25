@@ -1,8 +1,45 @@
-import { defineConfig } from 'vite'
+import { defineConfig, Plugin } from 'vite'
 import logseqPlugin from 'vite-plugin-logseq'
+import { copyFileSync, readFileSync, writeFileSync } from 'fs'
+import { resolve } from 'path'
+
+// Plugin to copy package.json and icon.svg to dist directory
+function copyFilesPlugin(): Plugin {
+  return {
+    name: 'copy-files',
+    writeBundle() {
+      // Copy icon.svg
+      try {
+        copyFileSync(
+          resolve(__dirname, 'icon.svg'),
+          resolve(__dirname, 'dist', 'icon.svg')
+        )
+        console.log('✓ Copied icon.svg to dist/')
+      } catch (err) {
+        console.warn('Could not copy icon.svg:', err)
+      }
+
+      // Copy and modify package.json
+      try {
+        const packageJson = JSON.parse(
+          readFileSync(resolve(__dirname, 'package.json'), 'utf-8')
+        )
+        // Update the main field to point to index.js in the same directory
+        packageJson.main = 'index.js'
+        writeFileSync(
+          resolve(__dirname, 'dist', 'package.json'),
+          JSON.stringify(packageJson, null, 2)
+        )
+        console.log('✓ Copied package.json to dist/ (with updated main field)')
+      } catch (err) {
+        console.warn('Could not copy package.json:', err)
+      }
+    }
+  }
+}
 
 export default defineConfig({
-  plugins: [logseqPlugin()],
+  plugins: [logseqPlugin(), copyFilesPlugin()],
   build: {
     target: 'esnext',
     minify: 'esbuild',
